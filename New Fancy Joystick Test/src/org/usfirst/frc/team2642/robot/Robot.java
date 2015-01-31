@@ -11,10 +11,7 @@ public class Robot extends IterativeRobot {
 	RobotDrive myRobot;
 	Joystick stick;
 	int autoLoopCounter;
-	final int frontLeftChannel	= 2;
-    final int rearLeftChannel	= 3;
-    final int frontRightChannel	= 1;
-    final int rearRightChannel	= 0;
+	
     Gyro gyro;
     double Kp = .03;
     int crabcount = 0;
@@ -22,10 +19,10 @@ public class Robot extends IterativeRobot {
 	
     
     public void robotInit() {
-        myRobot = new RobotDrive(frontLeftChannel, rearLeftChannel, frontRightChannel, rearRightChannel);
+        myRobot = new RobotDrive(2, 3, 1, 0);
     	stick = new Joystick(0);
     	myRobot.setInvertedMotor(MotorType.kFrontLeft, true);
-    	myRobot.setInvertedMotor(MotorType.kFrontRight, true);
+    	myRobot.setInvertedMotor(MotorType.kRearLeft, true);
     	gyro = new Gyro(0);
     }
     
@@ -50,18 +47,18 @@ public class Robot extends IterativeRobot {
     public void teleopPeriodic(){
     	if(!stick.getRawButton(11)){
     		if (stick.getRawButton(1)){
-    		myRobot.mecanumDrive_Cartesian(stick.getX(), stick.getY(), stick.getTwist(), gyro.getAngle());
+    		myRobot.mecanumDrive_Cartesian(-stick.getX(), stick.getY(), -stick.getTwist(), gyro.getAngle());
     		}else if(stick.getRawButton(2) && crabcount <=1){
     		gyroset = gyro.getAngle();
     		crabcount++;
     		}else if(stick.getRawButton(2) && (crabcount >= 2)){
-    		myRobot.mecanumDrive_Cartesian(stick.getX()/2, stick.getY()/2, (gyro.getAngle() - gyroset) * Kp, gyro.getAngle()/2);
+    		myRobot.mecanumDrive_Cartesian(-stick.getX()/2, stick.getY()/2, (gyro.getAngle() - gyroset) * Kp, 0);
     		}else if(crabcount >= 1 && !stick.getRawButton(2)){
     		crabcount = 0;
-    		}else {
-    		myRobot.mecanumDrive_Cartesian(stick.getX() /2, stick.getY() /2, stick.getTwist() /2, gyro.getAngle());}
-    	}else{
-    		myRobot.mecanumDrive_Cartesian(stick.getX(), stick.getY(), stick.getTwist(), 0.0);
+    		}else{
+    		myRobot.mecanumDrive_Cartesian(-stick.getX()/2, stick.getY()/2, -stick.getTwist()/2, gyro.getAngle());}
+    		}else{
+    		myRobot.mecanumDrive_Cartesian(-stick.getX(), stick.getY(), -stick.getTwist(), 0.0);
 
     	}
     }
